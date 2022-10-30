@@ -35,7 +35,7 @@ function findCssClasses() {
   const testElem = document.createElement('div');
   document.body.appendChild(testElem);
   for (const cssClass of maxClasses) {
-    testElem.classList = cssClass;
+    testElem.className = cssClass;
     if (getComputedStyle(testElem)['overflow'] === 'hidden') {
       navigationElemCssClass = cssClass;
       break;
@@ -46,7 +46,7 @@ function findCssClasses() {
     return false;
   }
   for (const cssClass of maxClasses) {
-    testElem.classList = navigationElemCssClass + ' ' + cssClass;
+    testElem.className = navigationElemCssClass + ' ' + cssClass;
     if (getComputedStyle(testElem)['visibility'] !== 'hidden') {
       navigationElemVisibleCssClass = cssClass;
       break;
