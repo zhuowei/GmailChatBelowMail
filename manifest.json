@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Gmail chat below mail",
+  "version": "0.1.0",
+  "description": "Puts Chat/Spaces below Mail in the new Gmail interface",
+  "author": "Zhuowei Zhang",
+  "homepage_url": "https://github.com/zhuowei/GmailChatBelowMail",
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/mail/u/*"],
+      "js": ["contentscript.js"]
+    }
+  ]
+}
