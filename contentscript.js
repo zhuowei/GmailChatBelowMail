@@ -1,7 +1,13 @@
+// customization
+const chatHeight = 200;
+const spacesHeight = 200;
+const hideLeft = true;
+
 let leftNavigationElem;
 let navigationElemVisibleCssClass;
 let navigationElemCssClass;
 let navigationElemPopupClass;
+let chatParentElem, spacesParentElem, mailElem;
 let chatJscontrollerAttrib, spacesJscontrollerAttrib, mailJscontrollerAttrib;
 let backgroundColor;
 let mutationObserver;
@@ -57,19 +63,18 @@ function findCssClasses() {
   if (!chatIframe || !spacesIframe) {
     return false;
   }
-  const chatParentElem = parentWithClass(chatIframe, navigationElemCssClass);
-  const spacesParentElem =
-      parentWithClass(spacesIframe, navigationElemCssClass);
+  chatParentElem = parentWithClass(chatIframe, navigationElemCssClass);
+  spacesParentElem = parentWithClass(spacesIframe, navigationElemCssClass);
   chatJscontrollerAttrib = chatParentElem.getAttribute('jscontroller');
   spacesJscontrollerAttrib = spacesParentElem.getAttribute('jscontroller');
-  const mailElem = leftNavigationElem.nextSibling;
+  mailElem = leftNavigationElem.nextSibling;
   mailJscontrollerAttrib = mailElem.getAttribute('jscontroller');
   if (!chatJscontrollerAttrib || !spacesJscontrollerAttrib) {
     return false;
   }
   return true;
 }
-function makeCssOneElem(jscontroller, bottom, height) {
+function makeCssOneElem(jscontroller, bottom, height, left) {
   return `
     .${navigationElemCssClass}[jscontroller=${jscontroller}]:not(.${
       navigationElemVisibleCssClass}) {
@@ -77,7 +82,7 @@ function makeCssOneElem(jscontroller, bottom, height) {
         bottom: ${bottom} !important;
         height: ${height} !important;
         width: 256px !important;
-        left: 68px !important;
+        left: ${left} !important;
     }
     .${navigationElemCssClass}[jscontroller=${jscontroller}]:not(.${
       navigationElemVisibleCssClass}) div:first-child div:first-child div:first-child {
@@ -101,13 +106,20 @@ function makeCssMail(paddingBottom) {
     `
 }
 
+function makeCssHideLeft() {
+  return `[role=navigation] {
+    display: none;
+  }`;
+}
+
 function makeCss() {
-  const chatHeight = 200;
-  const spacesHeight = 200;
+  const left = hideLeft ? '0' : '68px';
   return makeCssOneElem(
-             chatJscontrollerAttrib, chatHeight + 'px', spacesHeight + 'px') +
-      makeCssOneElem(spacesJscontrollerAttrib, '0', spacesHeight + 'px') +
-      makeCssMail((chatHeight + spacesHeight) + 'px');
+             chatJscontrollerAttrib, chatHeight + 'px', spacesHeight + 'px',
+             left) +
+      makeCssOneElem(spacesJscontrollerAttrib, '0', spacesHeight + 'px', left) +
+      makeCssMail((chatHeight + spacesHeight) + 'px') +
+      (hideLeft ? makeCssHideLeft() : '');
 }
 
 function makeAndAddCss() {
@@ -122,12 +134,30 @@ function makeAndAddCss() {
   document.head.appendChild(cssElem);
 }
 
+function hideLeftMutationCallback(mutationList, mutationObserver) {
+  if (mailElem.classList.contains(navigationElemVisibleCssClass)) {
+    return;
+  }
+  chatParentElem.classList.remove(navigationElemVisibleCssClass);
+  spacesParentElem.classList.remove(navigationElemVisibleCssClass);
+  mailElem.classList.add(navigationElemVisibleCssClass);
+  return;
+}
+
+function addMutationCallbacksForHideLeft() {
+  const observer = new MutationObserver(hideLeftMutationCallback);
+  observer.observe(mailElem, {attributeFilter: ['class']});
+}
+
 function loadHandler() {
   if (!findCssClasses()) {
     console.log('zhuowei-gmail-sidebar-style: can\'t find css classes');
     return;
   }
   makeAndAddCss();
+  if (hideLeft) {
+    addMutationCallbacksForHideLeft();
+  }
 }
 
 function mutationCallback(mutationRecords) {

@@ -9,4 +9,10 @@ Firefox:
 
 Screenshot:
 
-![screenshot](https://user-images.githubusercontent.com/704768/198859115-b7dec47d-a53f-4763-a30a-d32f2bfd8e55.png)
+![screenshot](https://user-images.githubusercontent.com/704768/198860277-e777f2f9-5190-407c-bdd7-d5fc7cf97978.png)
+
+Configuration:
+
+Open contentscript.js and change:
+ - the height of Chat and Spaces sections
+ - as well as whether you want the left bar completely hidden.
