@@ -88,7 +88,7 @@ describe('GmailChatBelowMail post load', () => {
     expect(addedStyles!.textContent).toBe(EXPECTED_CSS);
   });
 
-  it('prevents switching navigation area from mail to chat', (done) => {
+  it('prevents switching navigation area from mail to chat', async () => {
     const chatElem = document.getElementById('chat-elem')!;
     const mailElem = document.getElementById('mail-elem')!;
 
@@ -96,11 +96,10 @@ describe('GmailChatBelowMail post load', () => {
     chatElem.classList.add('navigation-elem-visible');
     mailElem.classList.remove('navigation-elem-visible');
 
-    setTimeout(() => {
-      expect(chatElem.classList.contains('navigation-elem-visible'))
-          .toBe(false);
-      expect(mailElem.classList.contains('navigation-elem-visible')).toBe(true);
-      done();
-    }, 0);
+    // wait for the MutationObserver to fire
+    await Promise.resolve();
+
+    expect(chatElem.classList.contains('navigation-elem-visible')).toBe(false);
+    expect(mailElem.classList.contains('navigation-elem-visible')).toBe(true);
   });
 });

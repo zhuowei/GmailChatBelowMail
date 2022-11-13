@@ -1,2 +1,2 @@
-*.js
+contentscript*.js
 node_modules
