@@ -75,14 +75,32 @@ describe('GmailChatBelowMail post load', () => {
     fakeElem.innerHTML = FAKE_GMAIL_HTML;
     document.body.appendChild(fakeElem);
   });
+
   afterEach(() => {
     fakeElem.remove();
   });
+
   it('adds correct CSS', () => {
     loadHandler();
 
     const addedStyles = document.getElementById('zhuowei-gmail-sidebar-style');
     expect(addedStyles).not.toBeNull();
     expect(addedStyles!.textContent).toBe(EXPECTED_CSS);
+  });
+
+  it('prevents switching navigation area from mail to chat', (done) => {
+    const chatElem = document.getElementById('chat-elem')!;
+    const mailElem = document.getElementById('mail-elem')!;
+
+    loadHandler();
+    chatElem.classList.add('navigation-elem-visible');
+    mailElem.classList.remove('navigation-elem-visible');
+
+    setTimeout(() => {
+      expect(chatElem.classList.contains('navigation-elem-visible'))
+          .toBe(false);
+      expect(mailElem.classList.contains('navigation-elem-visible')).toBe(true);
+      done();
+    }, 0);
   });
 });
