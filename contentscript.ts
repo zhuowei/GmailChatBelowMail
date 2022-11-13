@@ -3,13 +3,15 @@ const chatHeight = 200;
 const spacesHeight = 200;
 const hideLeft = true;
 
-let leftNavigationElem:HTMLElement|null;
-let navigationElemVisibleCssClass:string;
-let navigationElemCssClass:string|null;
-let navigationElemPopupClass:string|null;
-let chatParentElem:HTMLElement|null, spacesParentElem:HTMLElement|null, mailElem:HTMLElement|null;
-let chatJscontrollerAttrib:string|null, spacesJscontrollerAttrib:string|null, mailJscontrollerAttrib:string|null;
-function parentWithClass(element: HTMLElement | null, cssClass: string) {
+let leftNavigationElem: HTMLElement|null;
+let navigationElemVisibleCssClass: string;
+let navigationElemCssClass: string|null;
+let navigationElemPopupClass: string|null;
+let chatParentElem: HTMLElement|null, spacesParentElem: HTMLElement|null,
+    mailElem: HTMLElement|null;
+let chatJscontrollerAttrib: string|null, spacesJscontrollerAttrib: string|null,
+    mailJscontrollerAttrib: string|null;
+function parentWithClass(element: HTMLElement|null, cssClass: string) {
   while (element && !element.classList.contains(cssClass)) {
     element = element.parentElement;
   }
@@ -57,10 +59,10 @@ function findCssClasses() {
   if (!navigationElemVisibleCssClass) {
     return false;
   }
-  const chatIframe =
-      navigationParent!.querySelector('iframe#gtn-roster-iframe-id') as HTMLElement;
-  const spacesIframe =
-      navigationParent!.querySelector(`iframe[src*='&id=rooms&']`) as HTMLElement;
+  const chatIframe = navigationParent!.querySelector(
+                         'iframe#gtn-roster-iframe-id') as HTMLElement;
+  const spacesIframe = navigationParent!.querySelector(
+                           `iframe[src*='&id=rooms&']`) as HTMLElement;
   if (!chatIframe || !spacesIframe) {
     return false;
   }
@@ -73,12 +75,14 @@ function findCssClasses() {
   chatJscontrollerAttrib = chatParentElem.getAttribute('jscontroller');
   spacesJscontrollerAttrib = spacesParentElem.getAttribute('jscontroller');
   mailJscontrollerAttrib = mailElem.getAttribute('jscontroller');
-  if (!chatJscontrollerAttrib || !spacesJscontrollerAttrib || !mailJscontrollerAttrib) {
+  if (!chatJscontrollerAttrib || !spacesJscontrollerAttrib ||
+      !mailJscontrollerAttrib) {
     return false;
   }
   return true;
 }
-function makeCssOneElem(jscontroller: string, bottom: string, height: string, left: string) {
+function makeCssOneElem(
+    jscontroller: string, bottom: string, height: string, left: string) {
   return `
     .${navigationElemCssClass}[jscontroller=${jscontroller}]:not(.${
       navigationElemVisibleCssClass}) {
@@ -121,7 +125,8 @@ function makeCss() {
   return makeCssOneElem(
              chatJscontrollerAttrib!, chatHeight + 'px', spacesHeight + 'px',
              left) +
-      makeCssOneElem(spacesJscontrollerAttrib!, '0', spacesHeight + 'px', left) +
+      makeCssOneElem(
+             spacesJscontrollerAttrib!, '0', spacesHeight + 'px', left) +
       makeCssMail((chatHeight + spacesHeight) + 'px') +
       (hideLeft ? makeCssHideLeft() : '');
 }
@@ -138,7 +143,8 @@ function makeAndAddCss() {
   document.head.appendChild(cssElem);
 }
 
-function hideLeftMutationCallback(mutationList:MutationRecord[], mutationObserver:MutationObserver) {
+function hideLeftMutationCallback(
+    mutationList: MutationRecord[], mutationObserver: MutationObserver) {
   if (mailElem!.classList.contains(navigationElemVisibleCssClass)) {
     return;
   }
@@ -164,7 +170,8 @@ function loadHandler() {
   }
 }
 
-function mutationCallback(mutationRecords:MutationRecord[], mutationObserver:MutationObserver) {
+function mutationCallback(
+    mutationRecords: MutationRecord[], mutationObserver: MutationObserver) {
   for (const mutation of mutationRecords) {
     if (mutation.type === 'attributes' && mutation.attributeName === 'style' &&
         (mutation.target as HTMLElement).style.display === 'none') {

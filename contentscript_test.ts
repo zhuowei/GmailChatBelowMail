@@ -1,6 +1,5 @@
 import 'jasmine';
 
 describe('hey', () => {
-	it('works', () => {
-	});
+  it('works', () => {});
 });
