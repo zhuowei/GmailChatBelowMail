@@ -24,9 +24,53 @@ const FAKE_GMAIL_HTML = `
 </style>
 `;
 
+const EXPECTED_CSS = `
+    .navigation-elem[jscontroller=chat-jscontroller]:not(.navigation-elem-visible) {
+        visibility: inherit !important;
+        bottom: 200px !important;
+        height: 200px !important;
+        width: 256px !important;
+        left: 0 !important;
+    }
+    .navigation-elem[jscontroller=chat-jscontroller]:not(.navigation-elem-visible) div:first-child div:first-child div:first-child {
+        height: 24px !important;
+        margin-top: 8px !important;
+        margin-bottom: 0px !important;
+    }
+    .navigation-elem[jscontroller=chat-jscontroller]:not(.navigation-elem-visible) div:first-child div:first-child div:first-child div[role=button] {
+        height: 24px !important;
+    }
+    
+    .navigation-elem[jscontroller=spaces-jscontroller]:not(.navigation-elem-visible) {
+        visibility: inherit !important;
+        bottom: 0 !important;
+        height: 200px !important;
+        width: 256px !important;
+        left: 0 !important;
+    }
+    .navigation-elem[jscontroller=spaces-jscontroller]:not(.navigation-elem-visible) div:first-child div:first-child div:first-child {
+        height: 24px !important;
+        margin-top: 8px !important;
+        margin-bottom: 0px !important;
+    }
+    .navigation-elem[jscontroller=spaces-jscontroller]:not(.navigation-elem-visible) div:first-child div:first-child div:first-child div[role=button] {
+        height: 24px !important;
+    }
+    
+    .navigation-elem[jscontroller=mail-jscontroller].navigation-elem-visible {
+        padding-bottom: 400px;
+    }
+    [role=navigation] {
+    display: none;
+  }`;
+
 describe('GmailChatBelowMail post load', () => {
   let fakeElem: HTMLElement;
   beforeEach(() => {
+    const myStyles = document.getElementById('zhuowei-gmail-sidebar-style');
+    if (myStyles) {
+      myStyles.remove();
+    }
     fakeElem = document.createElement('div');
     fakeElem.innerHTML = FAKE_GMAIL_HTML;
     document.body.appendChild(fakeElem);
@@ -34,17 +78,11 @@ describe('GmailChatBelowMail post load', () => {
   afterEach(() => {
     fakeElem.remove();
   });
-  it('finds css classes', () => {
-    expect(findCssClasses()).toBe(true);
+  it('adds correct CSS', () => {
+    loadHandler();
 
-    expect(leftNavigationElem!.id).toBe('left-navigation-elem');
-    expect(navigationElemVisibleCssClass).toBe('navigation-elem-visible');
-    expect(navigationElemCssClass).toBe('navigation-elem');
-    expect(chatParentElem!.id).toBe('chat-elem');
-    expect(spacesParentElem!.id).toBe('spaces-elem');
-    expect(mailElem!.id).toBe('mail-elem');
-    expect(chatJscontrollerAttrib).toBe('chat-jscontroller');
-    expect(spacesJscontrollerAttrib).toBe('spaces-jscontroller');
-    expect(mailJscontrollerAttrib).toBe('mail-jscontroller');
+    const addedStyles = document.getElementById('zhuowei-gmail-sidebar-style');
+    expect(addedStyles).not.toBeNull();
+    expect(addedStyles!.textContent).toBe(EXPECTED_CSS);
   });
 });
