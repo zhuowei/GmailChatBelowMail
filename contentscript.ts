@@ -6,7 +6,6 @@ const hideLeft = true;
 let leftNavigationElem: HTMLElement|null;
 let navigationElemVisibleCssClass: string;
 let navigationElemCssClass: string|null;
-let navigationElemPopupClass: string|null;
 let chatParentElem: HTMLElement|null, spacesParentElem: HTMLElement|null,
     mailElem: HTMLElement|null;
 let chatJscontrollerAttrib: string|null, spacesJscontrollerAttrib: string|null,
@@ -68,7 +67,7 @@ function findCssClasses() {
   }
   chatParentElem = parentWithClass(chatIframe, navigationElemCssClass);
   spacesParentElem = parentWithClass(spacesIframe, navigationElemCssClass);
-  mailElem = leftNavigationElem.nextSibling as HTMLElement;
+  mailElem = leftNavigationElem.nextElementSibling as HTMLElement;
   if (!chatParentElem || !spacesParentElem || !mailElem) {
     return false;
   }
