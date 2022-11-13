@@ -1,0 +1,26 @@
+{
+  "name": "gmail-chat-below-mail",
+  "version": "1.0.0",
+  "description": "Chrome extension for the new Gmail interface that puts Chat/Spaces back below Mail.",
+  "main": "contentscript.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhuowei/GmailChatBelowMail.git"
+  },
+  "author": "Zhuowei Zhang",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/zhuowei/GmailChatBelowMail/issues"
+  },
+  "homepage": "https://github.com/zhuowei/GmailChatBelowMail#readme",
+  "devDependencies": {
+    "@types/jasmine": "^4.3.0",
+    "jasmine-core": "^4.5.0",
+    "karma": "^6.4.1",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-jasmine": "^5.1.0"
+  }
+}

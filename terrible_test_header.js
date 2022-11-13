@@ -1,0 +1,2 @@
+function require() {}
+var exports = {};

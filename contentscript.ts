@@ -3,12 +3,12 @@ const chatHeight = 200;
 const spacesHeight = 200;
 const hideLeft = true;
 
-let leftNavigationElem:HTMLElement;
+let leftNavigationElem:HTMLElement|null;
 let navigationElemVisibleCssClass:string;
-let navigationElemCssClass:string;
-let navigationElemPopupClass:string;
-let chatParentElem:HTMLElement, spacesParentElem:HTMLElement, mailElem:HTMLElement;
-let chatJscontrollerAttrib:string, spacesJscontrollerAttrib:string, mailJscontrollerAttrib:string;
+let navigationElemCssClass:string|null;
+let navigationElemPopupClass:string|null;
+let chatParentElem:HTMLElement|null, spacesParentElem:HTMLElement|null, mailElem:HTMLElement|null;
+let chatJscontrollerAttrib:string|null, spacesJscontrollerAttrib:string|null, mailJscontrollerAttrib:string|null;
 function parentWithClass(element: HTMLElement | null, cssClass: string) {
   while (element && !element.classList.contains(cssClass)) {
     element = element.parentElement;
@@ -20,15 +20,18 @@ function findCssClasses() {
   if (!leftNavigationElem) {
     return false;
   }
-  const navigationParent = leftNavigationElem.parentElement;
+  const navigationParent = leftNavigationElem.parentElement!;
   let maxClasses = null;
-  for (const a of navigationParent.children) {
+  for (const a of navigationParent.children as Iterable<HTMLElement>) {
     if (a === leftNavigationElem) {
       continue;
     }
     if (maxClasses === null || maxClasses.length < a.classList.length) {
       maxClasses = a.classList;
     }
+  }
+  if (!maxClasses) {
+    return false;
   }
   const testElem = document.createElement('div');
   document.body.appendChild(testElem);
@@ -55,17 +58,20 @@ function findCssClasses() {
     return false;
   }
   const chatIframe =
-      navigationParent.querySelector('iframe#gtn-roster-iframe-id') as HTMLElement;
+      navigationParent!.querySelector('iframe#gtn-roster-iframe-id') as HTMLElement;
   const spacesIframe =
-      navigationParent.querySelector(`iframe[src*='&id=rooms&']`) as HTMLElement;
+      navigationParent!.querySelector(`iframe[src*='&id=rooms&']`) as HTMLElement;
   if (!chatIframe || !spacesIframe) {
     return false;
   }
   chatParentElem = parentWithClass(chatIframe, navigationElemCssClass);
   spacesParentElem = parentWithClass(spacesIframe, navigationElemCssClass);
+  mailElem = leftNavigationElem.nextSibling as HTMLElement;
+  if (!chatParentElem || !spacesParentElem || !mailElem) {
+    return false;
+  }
   chatJscontrollerAttrib = chatParentElem.getAttribute('jscontroller');
   spacesJscontrollerAttrib = spacesParentElem.getAttribute('jscontroller');
-  mailElem = leftNavigationElem.nextSibling as HTMLElement;
   mailJscontrollerAttrib = mailElem.getAttribute('jscontroller');
   if (!chatJscontrollerAttrib || !spacesJscontrollerAttrib || !mailJscontrollerAttrib) {
     return false;
@@ -113,9 +119,9 @@ function makeCssHideLeft() {
 function makeCss() {
   const left = hideLeft ? '0' : '68px';
   return makeCssOneElem(
-             chatJscontrollerAttrib, chatHeight + 'px', spacesHeight + 'px',
+             chatJscontrollerAttrib!, chatHeight + 'px', spacesHeight + 'px',
              left) +
-      makeCssOneElem(spacesJscontrollerAttrib, '0', spacesHeight + 'px', left) +
+      makeCssOneElem(spacesJscontrollerAttrib!, '0', spacesHeight + 'px', left) +
       makeCssMail((chatHeight + spacesHeight) + 'px') +
       (hideLeft ? makeCssHideLeft() : '');
 }
@@ -133,18 +139,18 @@ function makeAndAddCss() {
 }
 
 function hideLeftMutationCallback(mutationList:MutationRecord[], mutationObserver:MutationObserver) {
-  if (mailElem.classList.contains(navigationElemVisibleCssClass)) {
+  if (mailElem!.classList.contains(navigationElemVisibleCssClass)) {
     return;
   }
-  chatParentElem.classList.remove(navigationElemVisibleCssClass);
-  spacesParentElem.classList.remove(navigationElemVisibleCssClass);
-  mailElem.classList.add(navigationElemVisibleCssClass);
+  chatParentElem!.classList.remove(navigationElemVisibleCssClass);
+  spacesParentElem!.classList.remove(navigationElemVisibleCssClass);
+  mailElem!.classList.add(navigationElemVisibleCssClass);
   return;
 }
 
 function addMutationCallbacksForHideLeft() {
   const observer = new MutationObserver(hideLeftMutationCallback);
-  observer.observe(mailElem, {attributeFilter: ['class']});
+  observer.observe(mailElem!, {attributeFilter: ['class']});
 }
 
 function loadHandler() {
